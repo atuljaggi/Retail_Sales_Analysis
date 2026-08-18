@@ -152,3 +152,5 @@ Some of the key findings from the analysis include:
 - **Revenue was almost balanced across genders.**
 
 > Note: These insights are based on the dataset used in this project and should not be treated as general retail industry conclusions.
+
+<img width="1658" height="913" alt="Retail_Sales_Dashboard" src="https://github.com/user-attachments/assets/95bd2b93-d113-46b1-a785-80ad7326bdbf" />
