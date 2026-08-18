@@ -1,1 +1,255 @@
+[CREATE_DATABASE]
+
+CREATE DATABASE Retail_Sales_Analysis;
+USE Retail_Sales_Analysis;
+
+[CREATE_TABLE]
+
+CREATE TABLE Retail_Sales
+(
+Transaction_ID INT,
+Date DATE,
+Customer_ID VARCHAR(20),
+Gender VARCHAR(20),
+Age INT,
+Product_Category VARCHAR(50),
+Quantity INT,
+Price_Per_Unit DECIMAL(10,2),
+Total_Amount DECIMAL(10,2)
+);
+
+[DUPLICATE_VALUE]
+
+SELECT 
+      Transaction_ID,
+      COUNT(*) AS Duplicate_Value
+FROM retail_sales
+GROUP BY Transaction_ID
+HAVING COUNT(*) >1;
+
+[MISSING_VALUES]
+
+SELECT
+      COUNT(*) AS Total_Rows,
+      COUNT(Customer_ID) AS Customer_ID_Count,
+      COUNT(Gender) AS Gender_Count,
+      COUNT(Age) AS Age_Count,
+      COUNT(Product_Category) AS Category_Count,
+      COUNT(Quantity) AS Quantity_Count,
+      COUNT(Price_Per_Unit) AS Price_Count,
+      COUNT(Total_Amount) AS Amount_Count
+FROM retail_sales;
+
+[INVALID_VALUES]
+
+SELECT *
+FROM retail_sales
+WHERE Quantity <0;
+
+SELECT *
+FROM retail_sales
+WHERE Price_Per_Unit <0;
+
+SELECT *
+FROM retail_sales
+WHERE Total_Amount <0;
+
+SELECT *
+FROM retail_sales
+WHERE Age <18 OR Age >100;
+
+[VERIFY_TOTAL_AMOUNT]
+
+SELECT *
+FROM retail_sales
+WHERE Quantity * Price_Per_Unit <> Total_Amount;
+
+[BUSINESS_QUESTIONS]
+
+SELECT  SUM(Total_Amount)
+FROM Retail_Sales;
+
+SELECT COUNT(Transaction_ID)
+FROM retail_sales;
+
+SELECT COUNT(DISTINCT Customer_ID)
+FROM retail_sales;
+
+SELECT SUM(Quantity)
+FROM retail_sales;
+
+SELECT Total_Amount/Quantity AS AVG_Value
+FROM retail_sales;
+
+[SALES_ANALYSIS_TREND]
+
+SELECT MONTH(Date) AS Month,
+SUM(Total_Amount) AS total_revenue
+FROM retail_sales
+GROUP BY Month
+ORDER BY total_revenue DESC
+LIMIT 1;
+
+SELECT MONTH(Date) AS Month,
+MAX(Quantity) AS Transactions
+FROM retail_sales
+GROUP BY Month
+ORDER BY Transactions DESC
+LIMIT 1;
+
+SELECT Month(Date) AS Month,
+MAX(Quantity) AS MaxQtySold
+FROM retail_sales
+GROUP BY month
+ORDER BY MaxQtySold DESC
+Limit 1;
+
+[PRODUCT_ANALYSIS]
+
+SELECT Product_Category,
+       MAX(Price_Per_Unit) AS Most_Units
+FROM retail_sales
+GROUP BY Product_Category
+ORDER BY Most_Units DESC
+LIMIT 1;
+
+SELECT Product_Category,
+       AVG(Total_Amount) AS Avg_Value
+FROM retail_sales
+GROUP BY Product_Category
+ORDER BY Avg_Value
+LIMIT 1;
+
+SELECT Product_Category,
+       AVG(Price_Per_Unit) AS Avg_Price
+FROM retail_sales
+GROUP BY Product_Category
+ORDER BY Avg_Price
+LIMIT 1;
+
+[CUSTOMER_ANALYSIS]
+
+SELECT COUNT(DISTINCT Customer_ID)
+FROM retail_sales
+
+SELECT Customer_ID,
+       MAX(Quantity) AS Most_Transactions
+FROM retail_sales
+GROUP BY Customer_ID
+ORDER BY Most_Transactions DESC
+LIMIT 1;
+
+SELECT Customer_ID,
+       MAX(Total_Amount) AS MAX_Revenue
+FROM retail_sales
+GROUP BY Customer_ID
+ORDER BY MAX_Revenue DESC
+LIMIT 1;
+
+SELECT Customer_ID,
+       AVG(Total_Amount) AS AVG_Spending
+FROM retail_sales
+GROUP BY Customer_ID
+ORDER BY AVG_Spending
+LIMIT 1;
+
+[GENDER_ANALYSIS]
+
+SELECT Gender,
+       MAX(Total_Amount) AS Most_Revenue
+FROM retail_sales
+GROUP BY Gender
+ORDER BY Most_Revenue DESC
+LIMIT 1;
+
+SELECT Gender,
+       AVG(Total_Amount) AS AvgTransByValue
+FROM retail_sales
+GROUP BY Gender
+ORDER BY AvgTransByValue
+LIMIT 1;
+
+SELECT Gender,
+	   MAX(Product_Category) AS PopularCategory
+FROM retail_sales
+GROUP BY Gender
+ORDER BY PopularCategory
+LIMIT 1;
+
+[AGE_ANALYSIS]
+
+SELECT Age,
+       MAX(Total_Amount) AS MostRevenue
+FROM retail_sales
+GROUP BY Age
+ORDER BY MostRevenue DESC
+LIMIT 1;
+
+SELECT Age,
+       MAX(Quantity) AS MostPurchase
+FROM retail_sales
+GROUP BY Age
+ORDER BY MostPurchase DESC
+LIMIT 1;
+
+SELECT Age,
+       AVG(Quantity) AS AvgTransactions
+FROM retail_sales
+GROUP BY Age
+ORDER BY AvgTransactions
+LIMIT 1;
+
+SELECT Age,
+       MAX(Product_Category) AS PopularCategory
+FROM retail_sales
+GROUP BY Age
+ORDER BY PopularCategory DESC
+LIMIT 1;
+
+[ANALYTICAL_COLUMN]
+
+SELECT Age_Group, Quarter
+FROM retail_sales;
+
+
+ALTER TABLE retail_sales
+           ADD COLUMN Age_Group VARCHAR(10);
+           
+UPDATE retail_sales
+SET Age_Group = CASE
+    WHEN Age BETWEEN 18 AND 24 THEN '18-24'
+    WHEN Age BETWEEN 25 AND 34 THEN '25-34'
+    WHEN Age BETWEEN 35 AND 44 THEN '35-44'
+    WHEN Age BETWEEN 45 AND 54 THEN '45-54'
+    ELSE '55+'
+END;
+
+ALTER TABLE retail_sales
+            ADD COLUMN Year INT
+
+UPDATE retail_sales
+SET Year = Year(Date);
+
+ALTER TABLE retail_sales
+            ADD COLUMN Month VARCHAR(10);
+
+UPDATE retail_sales
+SET Month = monthname(Date); 
+
+ALTER TABLE retail_sales
+		    ADD COLUMN Month_Number INT;
+
+UPDATE retail_sales
+SET Month_Number = Month(Date);
+
+
+ALTER TABLE retail_sales
+ADD Quarter INT;
+
+UPDATE retail_sales
+SET Quarter = quarter(Date);
+
+       
+
+
 
